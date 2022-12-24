@@ -2,6 +2,8 @@ import serial
 import time
 import platform
 import threading
+import re
+import csv
 
 Enter = '\n' 
 if platform.system() == 'Windows':
@@ -18,7 +20,16 @@ def read(ser):
     try:
         return ser.read(ser.in_waiting).decode()
     except UnicodeDecodeError:
-        return ""
+        return False
+
+
+def savetocsv(filename,data):
+     with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for csi in data:
+            writer.writerow([csi])
+    
+
 
 
 class com_esp():
@@ -32,7 +43,7 @@ class com_esp():
         self.monitorThread = False
         self.stop = False
         self.channel = 11
-        self.ping_f = 100
+        self.ping_f = 4
     
     #change defult incase of you needed to.
     def set_port(self,port,baud):
@@ -55,11 +66,12 @@ class com_esp():
     #Monitor serial input
     def __monitor(self):#thread
         while not self.stop:
-            self.lock.acquire()
             incoming = read(self.ser)
-            self.queue = self.queue + incoming
-            print(incoming,end='')
-            self.lock.release()
+            if incoming:
+                self.lock.acquire()
+                self.queue = self.queue + incoming
+                print(incoming,end='')
+                self.lock.release()
             time.sleep(0.1)
     
     def start_monitor(self):
@@ -95,4 +107,9 @@ class com_esp():
         elif command == "restart":
             self.send("restart")
         
+    def aquire_csi(self):
+        self.stop_monitor()
+        savedata = re.findall("CSI_DATA.*?\]",self.queue)
+        self.clear_queue()
+        return savedata
 
