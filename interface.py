@@ -24,7 +24,8 @@ def read(ser):
 
 
 def savetocsv(filename,data):
-     with open(filename, 'w', newline='') as csvfile:
+    filename = filename + ".csv"
+    with open(filename, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         for csi in data:
             writer.writerow([csi])
@@ -106,10 +107,27 @@ class com_esp():
             self.send("check")
         elif command == "restart":
             self.send("restart")
-        
+    
+
     def aquire_csi(self):
         self.stop_monitor()
         savedata = re.findall("CSI_DATA.*?\]",self.queue)
         self.clear_queue()
         return savedata
 
+    def run_collection(self,priority,ping_f,timeout):
+        self.set_ping_f(ping_f)
+        self.set_timeout(timeout)
+        self.start_monitor()
+        time.sleep(5)
+        if priority:#true runs recv first
+            self.send_command("recv")
+            time.sleep(timeout+3)
+            self.send_command("ping")
+        elif not priority:#true runs ping first
+            self.send_command("ping")
+            time.sleep(timeout+3)
+            self.send_command("recv")
+        time.sleep(timeout+3)
+        self.stop_monitor()
+            

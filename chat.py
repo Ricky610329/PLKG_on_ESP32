@@ -23,7 +23,7 @@ class chat:
     def send_init(self):
         self.send_data = socket(AF_INET,SOCK_DGRAM)
         self.send_data.connect((self.IP,self.PORT))
-    def init(self):
+    def initialize(self):
         self.stop = False
         self.send_init()
         hostName = gethostbyname( '0.0.0.0' )
