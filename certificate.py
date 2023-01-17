@@ -6,7 +6,9 @@ def gen_certificate(uav_public):
     expired = second + 60*60*24 # one day 
     expired_time = time.ctime(expired)
     device = ['AA','AB','AC']
-    gcs_public = "45,7988" #public for people to varified never change
+    gcs_public = "45asdas7988" #public for people to varified never change
     certificate = "SIGNTIME: " + timestamp + "\n" + "EXPIREDTIME: " + expired_time + "\n" + "DEVICE: " + " ".join(device) + "\n" + "GCS: " + gcs_public+ "\n" + "UAV: " + uav_public + "\n"
-    sign = "kadhjfhsalkfhsoak"#use function to sign
+    sign = "HASH: " + "kadhjfhsalkfhsoak"#use function to sign
     return certificate + sign
+
+print(gen_certificate("4fd5s53a465f4dwa24KJOJLD45c"))
