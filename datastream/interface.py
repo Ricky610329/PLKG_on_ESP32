@@ -29,8 +29,6 @@ def savetocsv(filename,data):
         writer = csv.writer(csvfile)
         for csi in data:
             writer.writerow([csi])
-    
-
 
 
 class com_esp():
