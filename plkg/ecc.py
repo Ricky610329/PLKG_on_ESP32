@@ -6,44 +6,63 @@ BCH
 import bchlib
 import random
 
-
-
 #generate random sequence for bch code
-def rand_sequence(coefficient):
+def rand_sequence(num):
     output = ''
-    for i in range(coefficient):
+    for i in range(num):
         sixteen_bit = random.randint(0, 62235)
-        output = output + int(sixteen_bit,2).to_bytes(2,"big")
+        output = output + '{0:016b}'.format(sixteen_bit)
     return output
+
+#changing 0/1 sequence to byte
+def binary_byte_convertor(data):
+    output = b''
+    index = 0
+    
+    if len(data) % 16 != 0:
+        print("data length must be multiples of 16")
+        return b''
+    
+    for index in range(len(data)//16):
+        bdata = data[16*index:16*(index+1)]
+        output = output + int(bdata,2).to_bytes(2,"big")
+    
+    return output
+
+#changing byte to 0/1 sequence
+def byte_binary_convertor(data):
+    output = ''
+    index = 0
+    if len(data) % 2 != 0:
+        print("data length must be multiples of 2")
+        return
+    
+    for index in range(len(data)//2):
+        bdata = data[2*index:2*(index+1)]
+        binary = int.from_bytes(bdata,"big")
+        output = output + '{0:016b}'.format(binary)
+
+    return output
+
+#run xor
+def run_xor(sequence1,sequence2):
+    if len(sequence1) != len(sequence2):
+        print("Data must have same length")
+        return ''
+    output = ''
+    for i in range(len(sequence1)):
+        if sequence1[i] == sequence2[i]:
+            output = output + '0'
+        else:
+            output = output + '1'
+
+
 
 
 def gen_BCH_code(coefficient):
     pass
 
-#'{0:016b}'.format(sixteen_bit)
-#int.from_bytes(byte,"big")
-#int(txt,2).to_bytes(2,"big")
-
-def key_xor_ecc(key):
-    
-    output = ''
-
-    key_len = len(key)
-    co = key_len//16 + 1
-    
-    for _ in range(co*16-key_len):
-        key = key + '0'
-    
-
-    ecc_code = rand_sequence(co)
-
-    for i in range(co):
-        
-        ecc_code[16*i:16*i + 16]
-        
 
 
-a="11111111111111111001"
-b="11111111111111111111"
-y=int(a,2) ^ int(b,2)
-print('{0:016b}'.format(y))
+for i in range(16):
+    print(len(binary_byte_convertor(rand_sequence(1))))
