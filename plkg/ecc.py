@@ -6,6 +6,21 @@ BCH
 import bchlib
 import random
 
+BCH_POLYNOMIAL = 8219
+BCH_BITS = 16
+
+def bit_flip(binary):
+    output = ''
+    for i in range(len(binary)):
+        if random.randint(0,10) == 5:
+            if binary[i] == "0":
+                output = output + "1"
+            if binary[i] == "1":
+                output = output + "0"
+        else:
+            output = output + binary[i]
+    return output
+
 #generate random sequence for bch code
 def rand_sequence(num):
     output = ''
@@ -55,14 +70,18 @@ def run_xor(sequence1,sequence2):
             output = output + '0'
         else:
             output = output + '1'
+    
+    return output
 
 
 
 
 def gen_BCH_code(coefficient):
-    pass
+    bchlib.BCH()
+    
 
 
-
+'''
 for i in range(16):
     print(len(binary_byte_convertor(rand_sequence(1))))
+'''

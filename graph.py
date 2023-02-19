@@ -8,6 +8,8 @@ def compare(data1,data2,bit,inbit):
     for sample1,sample2 in zip(data1,data2):
         gen1 = quan.quantization_1(sample1,bit,inbit)
         gen2 = quan.quantization_1(sample2,bit,inbit)
+        #print(len(gen1))
+        #print(len(gen2))
         count=0
         for i in range(len(gen1)):
             if gen1[i]==gen2[i]:
