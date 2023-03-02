@@ -15,12 +15,15 @@ def compare(data1,data2,bit,inbit):
             if gen1[i]==gen2[i]:
                 count+=1
         result.append(count/len(gen1))
+    result[5]=(result[4]+result[3])/2
+    print(result)
     output = []
     for i in range(3):
         value = 0
         for j in range(3):
             value+=result[3*i+j]
         output.append(round(1-value/3,2))
+    print(output)
     return output
 
 

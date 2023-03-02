@@ -96,6 +96,8 @@ def BCH_gen():
     return presentation
 
 #bch system
+#For any lengh of the quantization result
+#Encode
 def reconciliation_encode(q_result):
     miss = 16*math.ceil(len(q_result)/16)-len(q_result)
     for _ in range(miss):
@@ -107,6 +109,8 @@ def reconciliation_encode(q_result):
     xor_result = run_xor(ecc_code,q_result)
     return xor_result
 
+#For any lengh of the quantization result
+#decode
 def reconciliation_decode(q_result,re_result):
     bch = bchlib.BCH(BCH_POLYNOMIAL,BCH_BITS)
     length_ecc = math.ceil(len(q_result)/80)

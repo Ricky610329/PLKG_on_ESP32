@@ -40,8 +40,7 @@ def gray_code_gen(Nbits):
             
     return gray_sequence
 
-            
-
+#output a string that is hte quantization result
 def quantization_1(datas,Nbits,inbits):
     count = 0
     data = copy.deepcopy(datas)
