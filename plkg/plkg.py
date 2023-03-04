@@ -1,0 +1,88 @@
+import datastream.interface as interface
+import datastream.load as load
+import greycode_quantization as quan
+import ecc
+import time
+import sha256
+
+class end_device:
+    def __init__(self,device_tag):
+        self.device_tag = device_tag
+        self.esp0 = interface.com_esp('/dev/ttyUSB0',115200)#setting up device
+        if device_tag == 'U':
+            self.magic = True
+        elif device_tag == 'I':
+            self.magic = False
+        
+        #plkg parameter
+        self.quantization_result = ''
+        self.key = b''
+
+        #data exchange system
+        self.chatmanager = False
+
+        #save parameter
+        self.save = False
+        self.filename = 'filename'
+
+    def set_chatmanager(self,chatmanager):
+        self.chatmanager = chatmanager
+        
+    def save_probing_result(self,filename):
+        self.save = True
+        self.filename = filename
+
+    def time_synchronize(self):
+        if not self.chatmanager:
+            print("Error: need to assign chatmanager")
+            return False
+        if self.magic:
+            while (ack == 'FAIL') and (ack != '-check'):
+                self.chatmanager.send_line('-check')
+                time.sleep(0.5)
+                ack = self.chatmanager.pop_line()
+            self.chatmanager.send_line('-bang')
+            self.chatmanager.queue_clear()
+            return True
+        elif not self.magic:
+            while (ack == 'FAIL') and (ack != '-check'):
+                ack = self.chatmanager.pop_line()
+                if ack == '-check':
+                    self.chatmanager.send_line('-check')
+            if self.chatmanager.pop_line() == '-bang':
+                self.chatmanager.queue_clear()
+                return True
+
+
+    def channel_probing(self):
+        self.esp0.run_collection(self.magic,1,10)#manage the order pf probing
+        if self.save:
+            interface.savetocsv(self.filename,self.esp0.aquire_csi())
+        self.save = False
+        
+    def quantization(self):
+        csi_data = self.esp0.aquire_csi()
+        csi_average = quan.average(load.transform(csi_data))
+        self.quantization_result = quan.quantization_1(csi_average,2,13)
+    
+    def information_reconciliation(self):
+        if self.magic:
+            time.sleep(0.5)
+            ecc_code = ecc.reconciliation_encode(self.quantization_result)
+            self.chatmanager.send_line(ecc_code)
+        elif not self.magic:
+            reconcilation_result = "FAIL"
+            while reconcilation_result == "FAIL":
+                reconcilation_result = self.chatmanager.pop_line()
+            self.quantization_result = ecc.reconciliation_decode(self.quantization_result,reconcilation_result)
+    
+    def privacy_amplification(self):
+        self.key = sha256.sha_byte(self.quantization_result)
+
+    def plkg(self):
+        self.channel_probing()
+        self.quantization()
+        self.information_reconciliation()
+        self.privacy_amplification()
+        self.chatmanager.queue_clear()
+        return self.key

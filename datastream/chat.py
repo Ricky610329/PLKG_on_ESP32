@@ -1,10 +1,10 @@
 import threading
 from socket import socket,gethostbyname,AF_INET,SOCK_DGRAM
-
+import re
 
 SIZE = 1024
 
-class chat:
+class chat_manager:
     def __init__(self,IP,PORT=5000):
         self.IP = IP
         self.PORT = PORT
@@ -34,10 +34,12 @@ class chat:
         self.recv_thread = threading.Thread(target=self.receive_task)
         self.recv_thread.start()
 
-    #stop receive task
-    def receive_stop(self):
+    #close socket
+    def close_socket(self):
         self.stop = True
         self.recv_thread.join()
+        self.send_data.close()
+        self.recv.close()
 
     #data manipulation
     def pop(self):
@@ -50,6 +52,17 @@ class chat:
             self.queue = self.queue[1:]
             self.lock.release()
             return top
+    #return string
+    def pop_line(self):
+        output = self.queue.decode('utf-8')
+        output = re.search(".*?-end",output).group()
+        if output:
+            self.queue = self.queue[len(output.encode('utf-8')):]
+            return output[:4]
+        else:
+            return "FAIL"
+        
+
     def queue_clear(self):
         self.lock.acquire()
         self.queue = b''
@@ -60,6 +73,11 @@ class chat:
         self.queue = b''
         self.lock.release()
         return output
+    
 
     def send(self,message):
         self.send_data.send(message.encode('utf-8'))
+
+    def send_line(self,message):
+        line = message+'-end'
+        self.send_data.send(line.encode('utf-8'))
