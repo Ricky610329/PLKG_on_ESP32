@@ -1,9 +1,9 @@
 import datastream.interface as interface
 import datastream.load as load
-import greycode_quantization as quan
-import ecc
+import plkg.greycode_quantization as quan
+import plkg.ecc as ecc
 import time
-import sha256
+import plkg.sha256 as sha256
 
 class end_device:
     def __init__(self,device_tag):
@@ -37,21 +37,26 @@ class end_device:
             print("Error: need to assign chatmanager")
             return False
         if self.magic:
-            while (ack == 'FAIL') and (ack != '-check'):
+            ack = 'FAIL'
+            while ack != '-check':
                 self.chatmanager.send_line('-check')
                 time.sleep(0.5)
                 ack = self.chatmanager.pop_line()
+            time.sleep(0.5)
             self.chatmanager.send_line('-bang')
             self.chatmanager.queue_clear()
             return True
         elif not self.magic:
-            while (ack == 'FAIL') and (ack != '-check'):
+            ack = 'FAIL'
+            while ack != '-check':
                 ack = self.chatmanager.pop_line()
                 if ack == '-check':
                     self.chatmanager.send_line('-check')
-            if self.chatmanager.pop_line() == '-bang':
-                self.chatmanager.queue_clear()
-                return True
+            self.chatmanager.queue_clear()
+            while self.chatmanager.pop_line() != '-bang':
+                pass
+            self.chatmanager.queue_clear()
+            return True
 
 
     def channel_probing(self):
@@ -80,9 +85,12 @@ class end_device:
         self.key = sha256.sha_byte(self.quantization_result)
 
     def plkg(self):
-        self.channel_probing()
-        self.quantization()
-        self.information_reconciliation()
-        self.privacy_amplification()
-        self.chatmanager.queue_clear()
+        if self.time_synchronize():
+            self.channel_probing()
+            self.quantization()
+            self.information_reconciliation()
+            self.privacy_amplification()
+            self.chatmanager.queue_clear()
+        else:
+            return b"FAIL"
         return self.key

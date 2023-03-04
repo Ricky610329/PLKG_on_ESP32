@@ -9,7 +9,6 @@ class chat_manager:
         self.IP = IP
         self.PORT = PORT
         self.stop = False
-        self.lock = threading.Lock()
         self.queue = b""
         self.recv = 0
         self.recv_thread = 0
@@ -17,9 +16,7 @@ class chat_manager:
     def receive_task(self):
         while not self.stop:
             (data,addr) = self.recv.recvfrom(SIZE)
-            self.lock.acquire()
             self.queue = self.queue + data
-            self.lock.release()
     def send_init(self):
         self.send_data = socket(AF_INET,SOCK_DGRAM)
         self.send_data.connect((self.IP,self.PORT))
@@ -43,35 +40,28 @@ class chat_manager:
 
     #data manipulation
     def pop(self):
-        self.lock.acquire()
         if self.queue == b'':
-            self.lock.release()
             return b''
         else:
             top = self.queue[0]
             self.queue = self.queue[1:]
-            self.lock.release()
             return top
     #return string
     def pop_line(self):
-        output = self.queue.decode('utf-8')
-        output = re.search(".*?-end",output).group()
-        if output:
-            self.queue = self.queue[len(output.encode('utf-8')):]
-            return output[:4]
+        output = self.queue
+        if output == b'':
+            return 'FAIL'
         else:
-            return "FAIL"
-        
+            output = output.decode('utf-8')
+            output = re.search(".*?-end",output).group()
+            self.queue = self.queue[len(output.encode('utf-8')):]
+            return output[:-4]
 
     def queue_clear(self):
-        self.lock.acquire()
         self.queue = b''
-        self.lock.release()
     def read_queue(self):
-        self.lock.acquire()
         output = self.queue
         self.queue = b''
-        self.lock.release()
         return output
     
 

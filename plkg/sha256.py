@@ -9,6 +9,3 @@ def sha_byte(quantization_result):
         two_byte = "0x"+qr[4*i:4*(i+1)]
         byte_result = byte_result + int(two_byte,16).to_bytes(2, byteorder="big")
     return byte_result
-
-
-print(sha_byte("123"))
