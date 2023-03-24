@@ -69,7 +69,8 @@ class com_esp():
             if incoming:
                 self.lock.acquire()
                 self.queue = self.queue + incoming
-                print(incoming,end='')
+                #show probing result
+                #print(incoming,end='')
                 self.lock.release()
             time.sleep(0.1)
     
