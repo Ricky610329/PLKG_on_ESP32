@@ -464,7 +464,7 @@ class Ui_MainWindow(object):
         self.settings_confirm.setText(_translate("MainWindow", "Confirm"))
         self.system_tab.setTabText(self.system_tab.indexOf(self.tab_3), _translate("MainWindow", "Settings"))
 
-
+'''
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
@@ -472,3 +472,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+'''

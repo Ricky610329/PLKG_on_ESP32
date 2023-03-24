@@ -1,4 +1,4 @@
-import datastream.interface as interface
+import datastream.csi_interface as csi_interface
 import datastream.load as load
 import plkg.greycode_quantization as quan
 import plkg.ecc as ecc
@@ -8,7 +8,7 @@ import plkg.sha256 as sha256
 class end_device:
     def __init__(self,device_tag):
         self.device_tag = device_tag
-        self.esp0 = interface.com_esp('/dev/ttyUSB0',115200)#setting up device
+        self.esp0 = csi_interface.com_esp('/dev/ttyUSB0',115200)#setting up device
         if device_tag == 'U':
             self.magic = True
         elif device_tag == 'I':
@@ -62,7 +62,7 @@ class end_device:
     def channel_probing(self):
         self.esp0.run_collection(self.magic,1,10)#manage the order pf probing
         if self.save:
-            interface.savetocsv(self.filename,self.esp0.aquire_csi())
+            csi_interface.savetocsv(self.filename,self.esp0.aquire_csi())
         self.save = False
         
     def quantization(self):
