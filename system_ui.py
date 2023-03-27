@@ -1,8 +1,6 @@
-
-
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from IoD_UI.UI import *
+from IoD_UI.uiv2 import *
 import time
   
 class plkg_main_window(QMainWindow, Ui_MainWindow):
