@@ -14,6 +14,9 @@ class end_device:
         elif device_tag == 'I':
             self.magic = False
         
+        #csi average
+        self.csi_average = ''
+
         #plkg parameter
         self.quantization_result = ''
         self.key = b''
@@ -67,8 +70,8 @@ class end_device:
         
     def quantization(self):
         csi_data = self.esp0.aquire_csi()
-        csi_average = quan.average(load.transform(csi_data))
-        self.quantization_result = quan.quantization_1(csi_average,2,13)
+        self.csi_average = quan.average(load.transform(csi_data))
+        self.quantization_result = quan.quantization_1(self.csi_average,2,13)
     
     def information_reconciliation(self):
         if self.magic:

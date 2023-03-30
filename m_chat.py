@@ -33,4 +33,13 @@ class multi_chat:
 
     def read(self,target):
         return self.chat[target].read_queue().decode('utf-8')
-
+    
+    def chat_close(self):
+        try:
+            self.chat['uav'].close_socket()
+        except:
+            pass
+        try:
+            self.chat['iot'].close_socket()
+        except:
+            pass
