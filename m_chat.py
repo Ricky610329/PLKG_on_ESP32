@@ -22,8 +22,8 @@ class multi_chat:
         self.chat['uav'] = chat.chat_manager(self.link_table['uav_ip'],self.link_table['uav_port'])
         self.chat['iot'] = chat.chat_manager(self.link_table['iot_ip'],self.link_table['iot_port'])
         try:
-            self.uav_chat.chat_init()
-            self.iot_chat.chat_init()
+            self.chat['uav'].chat_init()
+            self.chat['iot'].chat_init()
         except:
             return False
         return True

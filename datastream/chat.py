@@ -2,7 +2,7 @@ import threading
 from socket import socket,gethostbyname,AF_INET,SOCK_DGRAM
 import re
 
-SIZE = 1024
+SIZE = 8000
 
 class chat_manager:
     def __init__(self,IP,PORT=5000):

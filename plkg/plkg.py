@@ -14,6 +14,7 @@ class end_device:
         elif device_tag == 'I':
             self.magic = False
         
+        self.reconciliation_result = ''
         #csi average
         self.csi_average = ''
 
@@ -78,14 +79,15 @@ class end_device:
             time.sleep(0.5)
             ecc_code = ecc.reconciliation_encode(self.quantization_result)
             self.chatmanager.send_line(ecc_code)
+            self.reconciliation_result = self.quantization_result
         elif not self.magic:
             reconcilation_result = "FAIL"
             while reconcilation_result == "FAIL":
                 reconcilation_result = self.chatmanager.pop_line()
-            self.quantization_result = ecc.reconciliation_decode(self.quantization_result,reconcilation_result)
+            self.reconciliation_result = ecc.reconciliation_decode(self.quantization_result,reconcilation_result)
     
     def privacy_amplification(self):
-        self.key = sha256.sha_byte(self.quantization_result)
+        self.key = sha256.sha_byte(self.reconciliation_result)
 
     def plkg(self):
         if self.time_synchronize():

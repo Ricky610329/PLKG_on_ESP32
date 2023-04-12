@@ -4,6 +4,7 @@ from datastream import chat
 class uav_system:
     def __init__(self,target_ip,device_tag):
         self.uav_chat = chat.chat_manager(target_ip,4500)
+        self.uav_chat.chat_init()
         self.device_tag = device_tag
         self.plkg_manager = False
     def plkg_init(self):
@@ -15,6 +16,6 @@ class uav_system:
         if type == 'average_result':
             return self.plkg_manager.csi_average
         elif type == 'quan_result':
-            return self.plkg_manager.quantization_result
+            return "Quantization result: " + self.plkg_manager.quantization_result
         elif type == 'key_result':
-            return self.plkg_manager.key
+            return "Generate key: "+str(self.plkg_manager.key)
