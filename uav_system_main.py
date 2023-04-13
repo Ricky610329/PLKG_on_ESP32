@@ -7,6 +7,7 @@ COMMAND_PLKG = "$PLKG"
 COMMAND_SEND = "$SEND"
 COMMAND_CHECK = "$CHEC"
 COMMAND_CONFIRM = "$CONF"
+COMMAND_LISTEN = "$LISN"
 
 
 def ui_connection():
@@ -40,10 +41,12 @@ if __name__ == "__main__":
         elif command[:5] == COMMAND_SEND:
             uav_interface.uav_chat.send(command[5:])
             gcs_chat.send("sending:"+command[5:])
+        elif command[:5] == COMMAND_LISTEN:
+            time.sleep(0.5)
+            gcs_chat.send(uav_interface.uav_chat.read_queue().decode('utf-8'))
         elif command[:5] == COMMAND_PLKG:
             uav_interface.run_plkg()
-            time.sleep(30)
+            #time.sleep(30)
             gcs_chat.send(', '.join((str(i) for i in uav_interface.get_plkg_data('average_result')))+'\n')
             gcs_chat.send((uav_interface.get_plkg_data('quan_result'))+'\n')
             gcs_chat.send((uav_interface.get_plkg_data('key_result'))+'\n')
-
