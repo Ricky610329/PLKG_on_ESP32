@@ -71,3 +71,6 @@ class chat_manager:
     def send_line(self,message):
         line = message+'-end'
         self.send_data.send(line.encode('utf-8'))
+
+    def send_original(self,message):
+        self.send_data.send(message)

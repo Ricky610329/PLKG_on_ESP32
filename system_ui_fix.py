@@ -4,12 +4,17 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 from IoD_UI.uiv2 import *
 from m_chat import multi_chat
 import time
-import threading
+
 
 COMMAND_PLKG = "$PLKG"
 COMMAND_SEND = "$SEND"
 COMMAND_CHECK = "$CHEC"
 COMMAND_CONFIRM = "$CONF"
+COMMAND_LISTEN = "$LISN"
+
+AES_ON = "$ON"
+AES_OFF = "$OF"
+
 
 prompt_action = '[ACTION]'
 prompt_status = '[STATUS]'
@@ -54,16 +59,29 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
             'iot':'',
             'uav':''
         }
+    def clear_text(self,target):
+        self.text[target] = ''
     def excute_send(self):
-        input_text = COMMAND_SEND + self.send_text_console.toPlainText()
+        
         d_index = self.data_direction_type.currentIndex()
-        self.send_text_console.setText('')
+        e_index = self.encryption_type.currentIndex()
+        encrypt = ""
+        if e_index == 1:
+            encrypt = AES_ON
+        elif e_index == 0:
+            encrypt =AES_OFF
+        input_text = COMMAND_SEND + encrypt +self.send_text_console.toPlainText()
+        recv_text = COMMAND_LISTEN + encrypt
         self.system_prompt_console.append(prompt_action + "data transimission direction <" + self.data_direction_type.currentText() + ">")
         try:
             if d_index == 0:
-                self.data_exchange.send('uav',COMMAND_SEND + input_text)
+                self.clear_text('uav')
+                self.data_exchange.send('uav',input_text)
+                self.data_exchange.send('iot',recv_text)
             elif d_index == 1:
-                self.data_exchange.send('iot',COMMAND_SEND + input_text)
+                self.clear_text('iot')
+                self.data_exchange.send('iot',input_text)
+                self.data_exchange.send('uav',recv_text)
             self.system_prompt_console.append(prompt_success + "send command success...")
         except:
             self.system_prompt_console.append(prompt_fail + "send command fail...\ncheck:\n - settings\n - rasspberry connection")
@@ -79,6 +97,8 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
             self.data_exchange.send('uav',COMMAND_CHECK)
             self.data_exchange.send('iot',COMMAND_CHECK)
             self.system_prompt_console.append(prompt_success + "check command success...")
+            print(self.text['uav'])
+            print(self.text['iot'])
         except:
             self.system_prompt_console.append(prompt_fail + "check command fail...\ncheck:\n - settings\n - rasspberry connection")
     def excute_confirm(self):

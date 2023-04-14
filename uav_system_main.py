@@ -1,7 +1,7 @@
-import system_ui
 from datastream import chat
 from uav_system import uav_system
 import time
+from plkg import aes
 
 COMMAND_PLKG = "$PLKG"
 COMMAND_SEND = "$SEND"
@@ -9,6 +9,8 @@ COMMAND_CHECK = "$CHEC"
 COMMAND_CONFIRM = "$CONF"
 COMMAND_LISTEN = "$LISN"
 
+AES_ON = "$ON"
+AES_OFF = "$OF"
 
 def ui_connection():
     gcs_ip = input("Input IP >>>")
@@ -39,11 +41,23 @@ if __name__ == "__main__":
         if command[:5] == COMMAND_CHECK:
             gcs_chat.send("Check received")
         elif command[:5] == COMMAND_SEND:
-            uav_interface.uav_chat.send(command[5:])
-            gcs_chat.send("sending:"+command[5:])
+
+            if command[5:8] == AES_ON:
+                outputtext = ''
+                outputtext = aes.encrypt(command[8:].encode('utf-8'),uav_interface.plkg_manager.key)
+                uav_interface.uav_chat.send(outputtext)
+                gcs_chat.send("sending:\n"+str(outputtext))
+            
+            elif command[5:8] == AES_OFF:
+                gcs_chat.send("sending:\n"+command[8:])
+                uav_interface.uav_chat.send(command[8:])
+
         elif command[:5] == COMMAND_LISTEN:
             time.sleep(0.5)
-            gcs_chat.send(uav_interface.uav_chat.read_queue().decode('utf-8'))
+            if command[5:8] == AES_ON:
+                gcs_chat.send_original(aes.decrypt(uav_interface.uav_chat.read_queue().decode('utf-8'),uav_interface.plkg_manager.key))
+            if command[5:8] == AES_OFF:
+                gcs_chat.send_original(uav_interface.uav_chat.read_queue())
         elif command[:5] == COMMAND_PLKG:
             uav_interface.run_plkg()
             #time.sleep(30)
