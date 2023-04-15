@@ -32,7 +32,10 @@ class multi_chat:
         self.chat[target].send(message)
 
     def read(self,target):
-        return self.chat[target].read_queue().decode('utf-8')
+        try:
+            return self.chat[target].read_queue().decode('utf-8')
+        except:
+            return str(self.chat[target].read_queue())
     
     def chat_close(self):
         try:

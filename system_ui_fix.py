@@ -1,10 +1,12 @@
 import sys
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from IoD_UI.uiv2 import *
+from PyQt5.QtWidgets import *
+from IoD_UI.ui_v4 import *
 from m_chat import multi_chat
 import time
+from datastream.graph import dataStringToNum
 
+#from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navig)
 
 COMMAND_PLKG = "$PLKG"
 COMMAND_SEND = "$SEND"
@@ -48,6 +50,8 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
         self.run_plkg.clicked.connect(self.excute_plkg)
         self.check_system.clicked.connect(self.excute_check)
         self.settings_confirm.clicked.connect(self.excute_confirm)
+        self.analysis_button.clicked.connect(self.makeplot)
+        self.setWindowTitle("demo")
         self.data_exchange = multi_chat()
         self.monitor_run = False
         self.monitor_task = {
@@ -58,6 +62,10 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
         self.text = {
             'iot':'',
             'uav':''
+        }
+        self.Amp = {
+            'iot':[],
+            'uav':[]
         }
     def clear_text(self,target):
         self.text[target] = ''
@@ -75,11 +83,11 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
         self.system_prompt_console.append(prompt_action + "data transimission direction <" + self.data_direction_type.currentText() + ">")
         try:
             if d_index == 0:
-                self.clear_text('uav')
+                #self.clear_text('uav')
                 self.data_exchange.send('uav',input_text)
                 self.data_exchange.send('iot',recv_text)
             elif d_index == 1:
-                self.clear_text('iot')
+                #self.clear_text('iot')
                 self.data_exchange.send('iot',input_text)
                 self.data_exchange.send('uav',recv_text)
             self.system_prompt_console.append(prompt_success + "send command success...")
@@ -87,18 +95,22 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
             self.system_prompt_console.append(prompt_fail + "send command fail...\ncheck:\n - settings\n - rasspberry connection")
     def excute_plkg(self):
         try:
+            self.clear_text('uav')
+            self.clear_text('iot')
             self.data_exchange.send('uav',COMMAND_PLKG)
             self.data_exchange.send('iot',COMMAND_PLKG)
             self.system_prompt_console.append(prompt_success + "run plkg command success...")
         except:
             self.system_prompt_console.append(prompt_fail + "run plkg command fail...\ncheck:\n - settings\n - rasspberry connection")
+    
+    
     def excute_check(self):
         try:
             self.data_exchange.send('uav',COMMAND_CHECK)
             self.data_exchange.send('iot',COMMAND_CHECK)
             self.system_prompt_console.append(prompt_success + "check command success...")
-            print(self.text['uav'])
-            print(self.text['iot'])
+            #print(self.text['uav'])
+            #print(self.text['iot'])
         except:
             self.system_prompt_console.append(prompt_fail + "check command fail...\ncheck:\n - settings\n - rasspberry connection")
     def excute_confirm(self):
@@ -146,6 +158,24 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
     def appendIotConsole(self,text):
         if len(text) != 0:
             self.iot_console.append(text)
+    
+    def clearPlot(self):
+        self.graphtogo.canvas.axes.clear()
+
+    def draw(self,target):
+        self.Amp[target] = dataStringToNum(self.text[target])
+        self.graphtogo.canvas.axes.plot(self.Amp[target][0],self.Amp[target][1],marker='o',label=target)
+        #print(self.Amp[target])
+    def closeup(self):
+        self.graphtogo.canvas.axes.legend(loc='upper right')
+        self.graphtogo.canvas.draw()
+        
+    def makeplot(self):
+        self.clearPlot()
+        self.draw('uav')
+        self.draw('iot')
+        self.closeup()
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     myWin = plkg_main_window()
