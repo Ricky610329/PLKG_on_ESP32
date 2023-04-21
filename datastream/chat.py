@@ -21,6 +21,13 @@ class chat_manager:
         self.send_data = socket(AF_INET,SOCK_DGRAM)
         self.send_data.connect((self.IP,self.PORT))
     
+    def recv_init(self):
+        self.stop = False
+        hostName = gethostbyname( '0.0.0.0' )
+        self.recv = socket(AF_INET,SOCK_DGRAM)
+        self.recv.bind((hostName,self.PORT))
+        self.recv_thread = threading.Thread(target=self.receive_task)
+        self.recv_thread.start()
     #start to receiving task, and init send
     def chat_init(self):
         self.stop = False

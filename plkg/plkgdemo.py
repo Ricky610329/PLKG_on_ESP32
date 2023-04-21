@@ -28,8 +28,9 @@ class end_device:
         self.save = False
         self.filename = 'filename'
 
-    def set_chatmanager(self,chatmanager):
+    def set_chatmanager(self,chatmanager,evemanager):
         self.chatmanager = chatmanager
+        self.evemanager = evemanager
         
     def save_probing_result(self,filename):
         self.save = True
@@ -43,10 +44,12 @@ class end_device:
             ack = 'FAIL'
             while ack != '-check':
                 self.chatmanager.send_line('-check')
+                self.evemanager.send_line('-check')
                 time.sleep(0.5)
                 ack = self.chatmanager.pop_line()
             time.sleep(0.5)
             self.chatmanager.send_line('-bang')
+            self.evemanager.send_line('-bang')
             self.chatmanager.queue_clear()
             return True
         elif not self.magic:
@@ -78,6 +81,7 @@ class end_device:
             time.sleep(0.5)
             ecc_code = ecc.reconciliation_encode(self.quantization_result)
             self.chatmanager.send_line(ecc_code)
+            self.evemanager.send_line(ecc_code)
             self.reconciliation_result = self.quantization_result
         elif not self.magic:
             reconcilation_result = "FAIL"
