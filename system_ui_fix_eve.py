@@ -38,7 +38,8 @@ class monitorConsole(QThread):
             time.sleep(0.5)
             output = self.data_exchange.read(self.target)
             self.text[self.target] = self.text[self.target] + output
-            self.trigger.emit(output)
+            if len(output) > 0:
+                self.trigger.emit(output)
 
 
 class EvemonitorConsole(QThread):
@@ -58,10 +59,11 @@ class EvemonitorConsole(QThread):
             except:
                 output = str(self.eve_system.senddata)
             self.text[self.target] = self.text[self.target] + output
-            self.trigger.emit(output)
+            if len(output) > 0:
+                self.trigger.emit(output)
             #print(output)
             #print("form run"+self.eve_system.command)
-            self.eve_system.senddata = ''
+                self.eve_system.senddata = ''
 
 
 
@@ -202,16 +204,27 @@ class plkg_main_window(QMainWindow, Ui_MainWindow):
     def clearPlot(self):
         self.graphtogo.canvas.axes.clear()
 
+
     def draw(self,target):
         self.Amp[target] = dataStringToNum(self.text[target])
         self.graphtogo.canvas.axes.plot(self.Amp[target][0],self.Amp[target][1],marker='o',label=target)
         #print(self.Amp[target])
+
+
+    def drawsetup(self):
+        pass
+        #self.graphtogo.canvas.axes.xlabel('Subcarrier Index', size = 8)
+        #self.graphtogo.canvas.axes.ylabel('Amplitude', size = 8)
+        #self.graphtogo.canvas.axes.grid()
+        #self.graphtogo.canvas.axes.xticks(size = 8)
+        #self.graphtogo.canvas.axes.yticks(size = 8)
     def closeup(self):
-        self.graphtogo.canvas.axes.legend(loc='upper right')
+        self.graphtogo.canvas.axes.legend(loc='upper right',prop={'size': 16})
         self.graphtogo.canvas.draw()
         
     def makeplot(self):
         self.clearPlot()
+        self.drawsetup()
         self.draw('uav')
         self.draw('iot')
         self.draw('eve')

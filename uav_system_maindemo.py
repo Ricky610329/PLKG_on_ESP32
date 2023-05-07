@@ -18,7 +18,6 @@ def ui_connection():
     return (gcs_ip,chat.chat_manager(gcs_ip,gcs_port))
 
 def uav_connection(gcs_chat,gcs_ip):
-    gcs_chat.send("waiting for gcs")
     command = ''
     while True:
         command = gcs_chat.read_queue().decode('utf-8')
@@ -39,9 +38,9 @@ if __name__ == "__main__":
     while True:
         command = gcs_chat.read_queue().decode('utf-8')
         gcs_chat.send(uav_interface.uav_chat.read_queue().decode('utf-8'))
-        #print(command)
+        print(command)
+        time.sleep(0.2)
         if command[:5] == COMMAND_CHECK:
-            time.sleep(0.1)
             gcs_chat.send("Check received")
         elif command[:5] == COMMAND_SEND:
 
@@ -64,7 +63,9 @@ if __name__ == "__main__":
             if command[5:8] == AES_OFF:
                 gcs_chat.send_original(uav_interface.uav_chat.read_queue())
         elif command[:5] == COMMAND_PLKG:
+            gcs_chat.send("Starting PLKG...")
             uav_interface.run_plkg()
+            
             #time.sleep(30)
             gcs_chat.send(', '.join((str(i) for i in uav_interface.get_plkg_data('average_result')))+'\n')
             gcs_chat.send((uav_interface.get_plkg_data('quan_result'))+'\n')

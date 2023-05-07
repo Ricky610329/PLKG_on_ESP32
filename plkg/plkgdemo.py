@@ -45,7 +45,7 @@ class end_device:
             while ack != '-check':
                 self.chatmanager.send_line('-check')
                 self.evemanager.send_line('-check')
-                time.sleep(0.5)
+                time.sleep(0.1)
                 ack = self.chatmanager.pop_line()
             time.sleep(0.5)
             self.chatmanager.send_line('-bang')
@@ -57,6 +57,7 @@ class end_device:
             while ack != '-check':
                 ack = self.chatmanager.pop_line()
                 if ack == '-check':
+                    time.sleep(1)
                     self.chatmanager.send_line('-check')
             self.chatmanager.queue_clear()
             while self.chatmanager.pop_line() != '-bang':

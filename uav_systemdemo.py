@@ -1,10 +1,11 @@
 from plkg import plkgdemo
 from datastream import chat
-
+import time
 class uav_system:
     def __init__(self,target_ip,device_tag,eveip):
         self.uav_chat = chat.chat_manager(target_ip,4500)
         self.uav_chat.chat_init()
+        time.sleep(0.1)
         if device_tag == 'U':
             self.eve_chat = chat.chat_manager(eveip,4501)
             self.eve_chat.send_init()

@@ -26,6 +26,7 @@ class evesdropper:
     def main(self):
         self.eve_system.plkg_init(self.comport)
         while True:
+            time.sleep(0.2)
             if self.command == COMMAND_CHECK:
                 self.senddata = "Check received"
                 self.command = ''
@@ -34,6 +35,7 @@ class evesdropper:
             elif self.command[:5] == COMMAND_LISTEN:
                 time.sleep(0.5)
                 if self.command[5:8] == AES_ON:
+                    time.sleep(0.5)
                     try:
                         self.senddata = aes.decrypt(self.eve_system.uav_chat.read_queue().decode('utf-8'),self.eve_system.plkg_manager.key)
                     except:
@@ -43,6 +45,7 @@ class evesdropper:
                     except:
                         pass
                 elif self.command[5:8] == AES_OFF:
+                    time.sleep(0.5)
                     try:
                         self.senddata = self.eve_system.uav_chat.read_queue()
                     except:
