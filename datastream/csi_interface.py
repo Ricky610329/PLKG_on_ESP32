@@ -118,15 +118,15 @@ class com_esp():
         self.set_ping_f(ping_f)
         self.set_timeout(timeout)
         self.start_monitor()
-        time.sleep(5)
+        time.sleep(2)
         if priority:#true runs recv first
             self.send_command("recv")
-            time.sleep(timeout+3)
+            time.sleep(timeout+2)
             self.send_command("ping")
         elif not priority:#true runs ping first
             self.send_command("ping")
-            time.sleep(timeout+3)
+            time.sleep(timeout+2)
             self.send_command("recv")
-        time.sleep(timeout+3)
+        time.sleep(2)
         self.stop_monitor()
             

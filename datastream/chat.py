@@ -66,6 +66,7 @@ class chat_manager:
 
     def queue_clear(self):
         self.queue = b''
+
     def read_queue(self):
         output = self.queue
         self.queue = b''

@@ -41,7 +41,8 @@ class evesdropper:
                     except:
                         pass
                     try:
-                        self.senddata = aes.decrypt(self.eve_system.iot_chat.read_queue().decode('utf-8'),self.eve_system.plkg_manager.key)
+                        if len(self.senddata) == 0:
+                            self.senddata = aes.decrypt(self.eve_system.iot_chat.read_queue().decode('utf-8'),self.eve_system.plkg_manager.key)
                     except:
                         pass
                 elif self.command[5:8] == AES_OFF:
@@ -51,7 +52,8 @@ class evesdropper:
                     except:
                         pass
                     try:
-                        self.senddata = self.eve_system.iot_chat.read_queue()
+                        if len(self.senddata) == 0:
+                            self.senddata = self.eve_system.iot_chat.read_queue()
                     except:
                         pass
                 self.command = ''

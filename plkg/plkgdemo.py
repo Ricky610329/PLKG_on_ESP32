@@ -67,7 +67,7 @@ class end_device:
 
 
     def channel_probing(self):
-        self.esp0.run_collection(self.magic,1,10)#manage the order pf probing
+        self.esp0.run_collection(self.magic,1,4)#manage the order pf probing
         if self.save:
             csi_interface.savetocsv(self.filename,self.esp0.aquire_csi())
         self.save = False

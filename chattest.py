@@ -13,4 +13,4 @@ agent.chat_init()
 th = threading.Thread(target=show,args=(agent,))
 th.start()
 while True:
-    agent.send(input(">>>"))
+    agent.send(input())

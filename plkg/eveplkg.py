@@ -49,12 +49,12 @@ class end_device:
     
     def channel_probing(self):
         self.esp0.set_ping_f(1)#manage the order pf probing
-        self.esp0.set_timeout(10)
+        self.esp0.set_timeout(4)
         self.esp0.start_monitor()
-        time.sleep(5)
+        time.sleep(2)
         self.esp0.send_command("recv")
-        time.sleep(10+3)
-        time.sleep(10+3)
+        time.sleep(4+3)
+        time.sleep(2)
         self.esp0.stop_monitor()
         if self.save:
             csi_interface.savetocsv(self.filename,self.esp0.aquire_csi())
