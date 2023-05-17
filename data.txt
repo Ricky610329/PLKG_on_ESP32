@@ -1,0 +1,19 @@
+UAV:
+Quantization result: 10101010101010101010101010111111111111111111111111110101010101010101010101010100000000000000000000000000
+Generate key: b'\xa2<"\xac\xec\x89\xe4\xfa\xcc>\xd0\xf1t9\xa8E\xe2L\x8aq\x9dt\xd5\xf6.E\xe6\xa2\x941\xf2\x80'
+
+IoT:
+Quantization result: 10101010101010101010101011101111111111111111111111110101010101010100000101000000000000000000000001010101
+Generate key: b'\xa2<"\xac\xec\x89\xe4\xfa\xcc>\xd0\xf1t9\xa8E\xe2L\x8aq\x9dt\xd5\xf6.E\xe6\xa2\x941\xf2\x80'
+
+eve:
+Quantization result: 01010101010101010000000000000000000000000001010101011111111111111111111111111110101010101010101010101010
+Generate key: b'\x9d\xf6vwL\xd4k\x83\xad$\xf8\xa6\x10\xeel\xe5\xb3\x97\xd3\x00W\xb8\x8e\xe5\t\xe4|\xf2\xdam2Y'
+
+AES
+encode:
+faaf4e84daf5ffb506eae46614855de65537cfb0994fbff8cbfd65452497205f34500e246b6ba5b823828d02c8276e33
+decode:
+Hi! This is ricky. test!test!test!
+eve_decode:
+b'\xc3\xd7BQ\xd7\xb04\xe3\x15>V\xde\xc8\x0c\'\x7f/\xb6+"\xa4\xfc\xbd\xbdls\xe79@\xd0\x86\x1c\x1b\xfd\xcf7\xbe\xfc\xf7\x1d\xd5Y\x82\xdc\x1d\'S)'
