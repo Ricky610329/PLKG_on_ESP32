@@ -21,6 +21,8 @@ def swap(bit,x):
     if bit =='1' and x%2 == 1:
         return '1'
 
+
+
 def gray_code_gen(Nbits):
     gray_sequence = []
     for i in range(2**Nbits):
@@ -38,6 +40,7 @@ def gray_code_gen(Nbits):
                 x+=1               
             
     return gray_sequence
+
 
 #output a string that is hte quantization result
 def quantization_1(datas,Nbits,inbits):
