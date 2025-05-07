@@ -29,9 +29,8 @@ def rand_sequence(num):
         sixteen_bit = random.randint(0, 62235)
         output = output + '{0:016b}'.format(sixteen_bit)
     return output
-
-#changing 0/1 sequence to byte
-def binary_byte_convertor(data):
+#changing 0/1 sequence to byt
+def binary_byte_convertor(data: str) -> bytes:
     output = b''
     index = 0
     
@@ -46,7 +45,7 @@ def binary_byte_convertor(data):
     return output
 
 #changing byte to 0/1 sequence
-def byte_binary_convertor(data):
+def byte_binary_convertor(data: bytes) -> str:
     output = ''
     index = 0
     if len(data) % 2 != 0:
@@ -61,7 +60,7 @@ def byte_binary_convertor(data):
     return output
 
 #run xor
-def run_xor(sequence1,sequence2):
+def run_xor(sequence1,sequence2) -> str:
     small = min(len(sequence1),len(sequence2))
     output = ''
     for i in range(small):
